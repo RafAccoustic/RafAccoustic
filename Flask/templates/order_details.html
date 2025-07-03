@@ -1,0 +1,132 @@
+<link rel="stylesheet" href={{url_for('static',filename='order_details.css')}}>
+  <!-- Navigation Bar -->
+{% include 'navbar.html'%}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            {% for order_detail in order_details %}
+                <div class="cart-box">
+                    <a id="cart-link">
+                        <header class="cart-title">
+                            <h3>Cart</h3>
+                        </header>
+                    </a>
+                    <div class="item-row">
+                        <a id="cart-link"></a>
+                        <a class="item-link">
+                            <div class="item-thumbnail">
+                                <!-- Display product image -->
+                                <img src="data:image/jpeg;base64,{{ order_detail.image_data }}"
+                                     alt="{{ order_detail.name }}"
+                                     style="max-width: 200px;">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name">{{ order_detail['description'] }}</h3>
+                                <p class="item-stock">In Stock</p>
+                            </div>
+                            <div class="price-quantity">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" onclick="decrement({{ order_detail.product_id }}, {{ order_detail.price }})">-</button>
+                                    <span class="quantity-number" id="quantity-{{ order_detail['product_id'] }}">1</span>
+                                    <button class="quantity-btn" onclick="increment({{ order_detail.product_id }}, {{ order_detail.price }})">+</button>
+                                </div>
+                                <div class="price-info">
+                                    <p class="current-price" id="price-{{ order_detail['product_id'] }}">KSh {{ order_detail['price'] }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-4">
+            <div class="cart-summary">
+                <div class="cart-header">
+                    <article class="return-card">
+                        <h1 class="cart-title">CART SUMMARY</h1>
+                        <div class="flex-container">
+                            <p class="subtotal-label">Subtotal</p>
+                            <!-- Subtotal display -->
+                            <h3>KSh <span id="subtotal">0.00</span></h3>
+                        </div>
+                        <p class="delivery-info">Delivery fees not included yet.</p>
+                        <div class="checkout-section">
+                        <form id="checkout-form" method="POST">
+                            <input type="hidden" name="total_cost" id="total_cost">
+                            <input type="hidden" name="product_ids" id="product_ids">
+
+                            <!-- Hidden inputs for product quantities -->
+                            {% for order_detail in order_details %}
+                                <input type="hidden" name="product_quantities{{ order_detail.product_id }}"
+                                       id="quantity-hidden-{{ order_detail.product_id }}"
+                                       value="{{ order_detail.quantity }}">
+                            {% endfor %}
+
+                            <button class="checkout-btn" type="submit">Checkout (KSh <span id="subtotal1">0.00</span>)</button>
+                        </form>
+                        <script>
+                            document.getElementById('checkout-form').addEventListener('submit', async function (event) {
+                                event.preventDefault();
+
+                                const totalCost = parseFloat(document.getElementById('total_cost').value);
+                                const productIds = document.getElementById('product_ids').value.trim().split(',');
+                                const productQuantities = {};
+
+                                // Extract all product quantities
+                                document.querySelectorAll('[id^="quantity-hidden-"]').forEach(input => {
+                                    const productId = input.id.replace('quantity-hidden-', '');
+                                    productQuantities[productId] = parseInt(input.value, 10);
+                                });
+
+                                // Client-side validation
+                                if (!totalCost || totalCost <= 0) {
+                                    alert('Total cost must be greater than zero.');
+                                    return;
+                                }
+                                if (!productIds.length) {
+                                    alert('No products selected.');
+                                    return;
+                                }
+
+                                // Proceed with API call
+                                try {
+                                    const response = await fetch('/checkout', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            total_cost: totalCost,
+                                            product_ids: productIds,
+                                            product_quantities: productQuantities
+                                        })
+                                    });
+
+                                    const data = await response.json();
+                                    if (response.ok) {
+                                        alert(data.message);
+                                        window.location.href = data.redirect_url;
+                                    } else {
+                                        alert(`Error: ${data.error}`);
+                                    }
+                                } catch (error) {
+                                    alert('Network or server error: ' + error.message);
+                                }
+                            });
+                            </script>
+
+                        </div>
+                    </article>
+
+                    <div class="return-card">
+                        <h2 class="return-title">Returns are easy</h2>
+                        <p>Free return within 10 days&nbsp;
+                            <button class="more-info-btn return-info" data-pop-trig="def" data-pop-open="returns">Details</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='order_details.js') }}"></script>

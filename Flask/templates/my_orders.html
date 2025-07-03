@@ -1,0 +1,42 @@
+
+<link rel="stylesheet" href={{url_for('static',filename='order_details.css')}}>
+  <!-- Navigation Bar -->
+ {% include 'navbar.html'%}
+<div class="container">
+    <div class="row">
+    <div class="col-8">
+         {% for product in products %}
+            <div class="cart-box">
+                <a id="cart-link">
+                    <header class="cart-title">
+                        <h3>Cart</h3>
+                    </header>
+                </a>
+                <div class="item-row">
+                    <a id="cart-link"></a>
+                    <a class="item-link">
+                        <div class="item-thumbnail">
+                            <!-- Display product image -->
+                             <!-- Display product image -->
+                                <img src="data:image/jpeg;base64,{{ product.image_data }}"
+                                     alt="{{ product.name }}"
+                                     style="max-width: 200px;">
+                        </div>
+                        <div class="item-details">
+                            <h3 class="item-name"><?php echo $description; ?></h3>
+                            <p class="item-stock">In Stock</p>
+                        </div>
+                        <div class="price-quantity">
+
+                            <div class="price-info">
+                            <p class="current-price" id="price-{{ product['product_id'] }}">KSh {{ product['price'] }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+
+    </div>
+</div>

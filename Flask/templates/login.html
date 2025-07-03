@@ -1,0 +1,176 @@
+<head>
+<link rel="stylesheet" href={{url_for('static',filename='login.css')}}>
+</head>
+<div class="login-container">
+    <div id="loginForm">
+        <div class="login-password-mode">
+            <img class="logo" src="assets/images/Logo5.png" alt="">
+            <p class="login-title">Login with password</p>
+            <form id="login-form" class="form-password-login" >
+                <div class="form-field">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <input type="email" placeholder="Enter Email:" name="email" id="email" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <input type="password" placeholder="Enter Password:" name="password" id="password" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <p class="forgot-password-link"><span>forgot password</span></p>
+                <div class="submit-btn-container">
+                    <button type="submit" class="btn btn-dark login-btn form-control">Login</button>
+                </div>
+            </form>
+
+            <script>
+                document.getElementById('login-form').addEventListener('submit', async function (event) {
+                    event.preventDefault();
+
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            alert(`Error: ${data.error}\nDetails: ${data.details || 'No additional details'}`);
+                        }
+                    } catch (error) {
+                        alert('Network or server error: ' + error.message);
+                    }
+                });
+            </script>
+
+        </div>
+
+        <p class="switch-login-mode"><span><span class="switch-label">Login with SMS</span></span></p>
+        <div style="color:black;" class="alt-login-btn google-login">
+            <img src="https://img.kilimall.com/kenya/kilimall_lite/ic_google_2x.png?x-image-process=image/format,webp" alt=""> Login Via Google
+        </div>
+        <div style="color:#3267b8;" class="alt-login-btn facebook-login">
+            <img src="https://img.kilimall.com/kenya/kilimall_lite/ic_facebook_2x.png?x-image-process=image/format,webp" alt=""> Login Via Facebook
+        </div>
+        <div class="register-link">
+            <span style="color:black;">New to DygyCom? <span class="switch-label" onclick="showRegistrationForm()">Register</span></span>
+            <p style="color:black;" class="policy-text">I agree to DygyCom <a style="color:black;" href="https://helpcenter.kilimall.com/help-center/detail/2467?aid=83" target="_blank">Terms & Conditions and Privacy Policy</a></p>
+        </div>
+    </div>
+    <!-- Registration Area -->
+    <div class="registration" id="registrationForm">
+        <h1 class="text-center">Register Here</h1>
+        <div class="registration-form">
+            <form id="register-form" class="form-register">
+                <div class="form-group">
+                    <label for="username">Full Name:</label>
+                    <input type="text" class="form-control" id="username" placeholder="UserName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="reg-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="reg-password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <label for="repeat_password">Repeat Password:</label>
+                    <input type="password" class="form-control" id="repeat_password" placeholder="Repeat Password" required>
+                </div>
+                <p class="registrationForm" onclick="showLoginForm()">Already Have an Account? Login</p>
+                <button type="submit" class="btn btn-dark login-register form-control">Register</button>
+            </form>
+            <script>
+                document.getElementById('register-form').addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const username = document.getElementById('username').value.trim();
+                const reg_email = document.getElementById('reg-email').value.trim();
+                const reg_password = document.getElementById('reg-password').value.trim();
+                const repeatPassword = document.getElementById('repeat_password').value.trim();
+
+                // Basic client-side validation
+                if (!username || !reg_email || !reg_password || !repeatPassword) {
+                    alert('All fields are required.');
+                    return;
+                }
+
+                if (reg_password !== repeatPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+
+                if (reg_password.length < 8) {
+                    alert('Password must be at least 8 characters long.');
+                    return;
+                }
+
+                if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(reg_password)) {
+                    alert('Password must contain at least one letter and one number.');
+                    return;
+                }
+
+                // Proceed with API request
+                try {
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username,
+                            reg_email,
+                            reg_password,
+                            repeat_password: repeatPassword
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert(data.message);
+                        window.location.href = '/login';
+                    } else {
+                        alert(`Errors:\n${data.errors.join('\n')}`);
+                    }
+                } catch (error) {
+                    alert('Network or server error: ' + error.message);
+                }
+            });
+            </script>
+
+        </div>
+    </div>
+</div>
+<script>
+    // Constant variables
+    const loginForm = document.getElementById('loginForm');
+    const registrationForm = document.getElementById('registrationForm');
+
+    // Hide registration form
+    registrationForm.style.display = "none";
+
+
+    function showRegistrationForm() {
+        registrationForm.style.display = "";
+        loginForm.style.display = "none";
+    }
+
+    function showLoginForm() {
+        registrationForm.style.display = "none";
+        loginForm.style.display = "";
+    }
+
+</script>

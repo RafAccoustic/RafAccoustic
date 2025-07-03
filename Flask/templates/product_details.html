@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='product_details.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    {% include 'navbar.html' %}
+
+    <div class="flex-box">
+        <div class="left">
+            <!-- Loop through the products fetched from the database -->
+            {% for product_detail in product_details %}
+                <img src="data:image/jpeg;base64,{{ product_detail.image_data }}"
+                     alt="{{ product_detail.name }}"
+                     style="max-width: 200px;">
+            {% endfor %}
+
+            <div class="images">
+                <div class="small-img">
+                    <img src="assets/images/printer1.webp" onclick="showImg(this.src)">
+                </div>
+                <div class="small-img">
+                    <img src="assets/images/wmouse1.jpg" onclick="showImg(this.src)">
+                </div>
+                <div class="small-img">
+                    <img src="assets/images/laptop1.png" onclick="showImg(this.src)">
+                </div>
+                <div class="small-img">
+                    <img src="assets/images/keyboard1.jpg" onclick="showImg(this.src)">
+                </div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="url">Home &gt; Product &gt; T-Shirt</div>
+
+            {% for product_detail in product_details %}
+                <div class="pname">{{ product_detail.description }}</div>
+                <div class="ratings">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <div class="price">KSh {{ product_detail.price }}</div>
+                <div class="size">
+                    <p>Size :</p>
+                    <div class="psize active">M</div>
+                    <div class="psize">L</div>
+                    <div class="psize">XL</div>
+                    <div class="psize">XXL</div>
+                    <!-- Hidden input to store the product ID -->
+                    <input type="hidden" class="product-id" value="{{ product_detail.product_id }}">
+                </div>
+            {% endfor %}
+
+            <div class="btn-box">
+                <button onclick="addToCart()" class="cart-btn">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='product_details.js') }}"></script>
+</body>
+</html>

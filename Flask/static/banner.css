@@ -1,0 +1,711 @@
+/* Main sidebar styles */
+html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+.caty-container {
+    width: 88%;
+    max-width: 1700px;
+    background-color: white;
+    /* border-right: 1px solid #ddd; */
+    padding: 10px;
+    position: relative;
+}
+
+.caty-header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #e55625;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 177px;
+    height: 17px;
+}
+.caty-name {
+    font-size: 16px; /* Adjust the font size */
+}
+.base-caty-list {
+    max-height: 200px; /* Set the maximum height */
+    padding: 0;
+    list-style-type: none;
+    border: 1px solid #ddd; /* Optional: adds a border to the list */
+    transition: overflow-y 0.3s ease; /* Optional: smooth transition */
+    position: relative; /* Ensure it's positioned relative for dropdown alignment */
+}
+
+.main-caty-item {
+    display: flex;
+    align-items: center;
+    /* padding: 10px 15px; */
+    border-bottom: 1px solid #eee;
+    position: relative;
+    cursor: pointer;
+}
+
+.main-caty-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Arrow icon on the right */
+.main-caty-item .arrow-right-icon {
+    margin-left: auto;
+    color: #999;
+    font-size: 13px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    left: 175px;
+    top: -15;
+    width: 691px;
+    height: 399px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: none;
+    z-index: 1;
+}
+
+.dropdown-menu li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f9f9f9;
+}
+
+.main-caty-item:hover .dropdown-menu {
+    display: block;
+}
+.caty-name:hover .dropdown-menu {
+    display: block;
+}
+
+/* Ensure the sidebar items align correctly */
+.caty-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.caty-name {
+    flex-grow: 1;
+    font-size: 13px;
+    color: #333;
+}
+.row{
+    display: flex;
+}
+.col-4{
+    flex: 1;
+}
+.col-8{
+    flex: 3;
+}
+
+/* Image Slidee */
+
+.slider {
+    height: 384px;
+    position: relative;
+    width: 100%;
+    width: 712px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* width: 100%; */
+    height: auto;
+    display: block;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+
+}
+
+.slide {
+    min-width: 100%;
+    transition: left 1s ease;  /* Smooth transition for the sliding effect */
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+}
+
+.slide.active {
+    opacity: 1;
+    position: relative;
+}
+/* Position the next slide (for the sliding effect) */
+.slide.next {
+    left: 100%;  /* Position the next slide off-screen to the right */
+}
+
+/* Position the previous slide (for the sliding effect) */
+.slide.prev {
+    left: -100%;  /* Position the previous slide off-screen to the left */
+}
+
+.slide .img {
+    width: 833px;
+    border-radius: 10px;
+    height:100%;
+    bottom: 115px;
+
+}
+
+button.prev,
+button.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    user-select: none;
+    display: none; /* Hide buttons initially */
+}
+
+.slider:hover button.prev,
+.slider:hover button.next {
+    display: block; /* Show buttons on hover */
+}
+
+button.prev {
+    left: 10px;
+}
+
+button.next {
+    right: 10px;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+/* Media query for responsive design */
+@media screen and (max-width: 768px) {
+    .slider {
+        height: 251px;
+        width: 51px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        display: flex;
+        margin-left: -96px;
+    }
+    .row{
+        width: 380px;
+    }
+    .col-8{
+        flex: 1;
+    }
+
+    .sidebar{
+        display: none;
+    }
+
+    .slide img {
+        width: 370px;
+        height: fit-content;
+        border-radius: 0;
+    }
+
+    button.prev,
+    button.next {
+        padding: 5px;
+    }
+
+    button.prev {
+        left: 5px;
+    }
+
+    button.next {
+        right: 5px;
+    }
+}
+/* Multiple Image Slider */
+.slider-containers {
+    position: relative;
+    width: 88%;
+    max-width: 1700px;
+    margin: auto;
+    overflow: hidden;
+    top:31px;
+    /* left:-21px; */
+  }
+
+  .slider-wrappers {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .sliders {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: calc(100% * 8); /* Adjust this value according to the number of slides */
+    width:100%;
+  }
+
+  .slidess {
+    min-width: calc(100% / 10); /* Adjust this value based on the number of images visible at once */
+    /* padding: 10px; */
+    text-align: center;
+
+  }
+  .slidess .price{
+    color: #e55625;
+    font-weight: bold;
+   }
+
+
+  .slidess img {
+    width: 100px;
+    height: 100px;
+  }
+
+  button.prevs, button.nexts {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10;
+    font-size: 18px; /* Increased font size */
+    width: 40px; /* Increased button size */
+    height: 40px; /* Increased button size */
+  }
+
+  button.prevs {
+    left: 0px; /* Adjusted to be inside the slider */
+  }
+
+  button.nexts {
+    right: 0px; /* Adjusted to be inside the slider */
+  }
+
+  .slidess .description {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  button {
+    opacity: 1; /* Always visible */
+    transition: none; /* No transition effect */
+  }
+/* Media query for smaller screens (smartphones) */
+@media screen and (max-width: 768px) {
+    .slider-containers {
+        width: 100%; /* Make the container full width */
+        max-width: 100%;
+        top: 20px;
+    }
+
+    .sliders {
+        width: calc(100% * 11); /* Adjust the number of slides for smaller screens */
+    }
+
+    .slidess {
+        min-width: calc(100% / 18); /* Show fewer images at a time, making them larger */
+    }
+    .slidess .price{
+        color: #e55625;
+        font-weight: bold;
+       }
+    .slidess img {
+        width: 120px; /* Adjust image size for smaller screens */
+        height: 120px;
+    }
+
+    button.prevs, button.nexts {
+        font-size: 14px; /* Reduce button font size */
+        width: 30px; /* Reduce button size */
+        height: 30px;
+        display: none;
+    }
+
+    .slidess .description{
+        /* font-size: 10px; Reduce text size */
+        display: none;
+    }
+}
+
+
+/* Third Column */
+.help-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-left: 21px; */
+    margin-bottom:11px ;
+    height: 141px;
+}
+
+.help-section a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.help-section a:last-child {
+    border-bottom: none;
+}
+
+.help-section img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.help-section div {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.help-section .title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.help-section .description {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Small Slider */
+.slider-container1 {
+    position: relative;
+    height: 147px; /* Adjust as needed */
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* left: 11px; */
+    /*background-image: url('/static/images/Yellow-Orange.png'); !* Background image *!*/
+    background-size: cover; /* Ensure the image covers the entire container */
+    background-position: center; /* Center the background image */
+}
+
+.slider1 {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    justify-content: center;
+    overflow: hidden; /* Hide overflowing content */
+}
+
+.slide1 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Initially hide the slides */
+    transition: opacity 1s ease-in-out; /* Smooth transition for opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 61px;
+}
+
+.slide1 p {
+    font-size: 25px; /* Adjust size to fill container */
+}
+
+.slide1.actives {
+    opacity: 1; /* Make the active slide visible */
+}
+
+.slide1.prevs {
+    opacity: 0; /* Hide the previous slide */
+}
+
+/* Small Banners */
+
+/* Container for the banners */
+.medium-banners {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Space between each item */
+    /* padding: 10px 0; */
+    background-color: #f7f7f7; /* Optional: Light background */
+    width: 88%;
+    max-width: 1700px;
+    margin-left:97px;
+}
+
+/* Individual banner boxes */
+.image-box {
+    flex: 1; /* Make all boxes equally wide */
+    border-radius: 5px; /* Optional: Rounded corners */
+    overflow: hidden; /* To prevent content overflow */
+    background: #fff; /* White background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    transition: transform 0.3s; /* Optional: Add a hover effect */
+}
+
+/* Hover effect for banners */
+.image-box:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+}
+
+/* Images inside the banner boxes */
+.medium-image {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+}
+
+/* Optional: Anchor styling */
+.image-box a {
+    display: block;
+    text-decoration: none;
+}
+/* Media Query for Mobile Devices */
+@media screen and (max-width: 768px) {
+    /* Adjust the container for smaller screens */
+    .display{
+        display: none;
+    }
+    .medium-banners {
+        flex-direction: column; /*Stack the images vertically*/
+        width: 91%; /* Full width of the screen */
+        margin: 0; /* Remove margins */
+        gap: 15px; /* Increase the space between banners */
+        /* align-items: center; */
+    }
+
+    /* Make each image box take the full width of the screen */
+    .image-box {
+        flex: none; /* Remove equal width distribution */
+        width: 359px; /* Full width */
+        margin-left: 45px;
+    }
+
+    /* Adjust image sizing inside the boxes */
+    .image-box img {
+        width: 100%; /* Ensure the image fits the box */
+        height: auto; /* Maintain aspect ratio */
+        max-height: none; /* Remove max-height restriction for small screens */
+    }
+}
+/* Flash Sales Section */
+.flash-sales-section {
+    background-color: #fff;
+    padding: 20px;
+    /* margin-bottom: 20px; */
+    width: 88%;
+    max-width: 1700px;
+    margin-left: 71px;
+    /* margin-top: 51px; */
+}
+
+.flash-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.flash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.flash-header .header-content {
+    display: flex;
+    align-items: center;
+}
+
+.flash-header .flash-icon {
+    width: 30px;
+    margin-right: 10px;
+}
+
+.flash-header .flash-title-text {
+    font-size: 21px;
+    font-weight: bold;
+    color: #147cb9;
+    margin-right: 20px;
+}
+
+.flash-header .countdown-label {
+    font-size: 1.2em;
+    margin-right: 10px;
+    color: #555;
+}
+
+.flash-header .countdown-wrapper {
+    font-size: 1.2em;
+    color: #147cb9;
+}
+
+.flash-header .view-more-btn {
+    font-size: 1em;
+    color: #147cb9;
+    cursor: pointer;
+}
+/* Flash Sale Product Grid */
+.flash-products {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.flash-product-item {
+    width: 22%;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    transition: transform 0.2s ease;
+}
+
+.flash-product-item:hover {
+    transform: translateY(-5px);
+}
+
+.product-container a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-image-container img {
+    width: 100%;
+    border-radius: 5px;
+    width: 191px;
+    height: 151px;
+}
+
+.product-info {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.product-name {
+    font-size: 0.9em;
+    color: #333;
+    height: 85px;
+    overflow: hidden;
+}
+
+.product-price-label {
+    font-size: 18px;
+    color: #147cb9;
+    font-weight: bold;
+}
+@media screen and (max-width: 768px) {
+    .flash-sales-section {
+        background-color: #fff;
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .flash-wrapper {
+        display: flex;
+        flex-direction: column;
+        /* width: 50%; */
+    }
+    .flash-product-item {
+        padding: 5px;
+        width: calc(45% - 5px); /* Two items per row with a small gap */
+    }
+    .flash-header {
+        /* flex-direction: column; Stack header elements on mobile */
+        /* align-items: center; */
+        margin-left: -30px;
+    }
+
+    .flash-header .flash-title-text {
+        font-size: 12px;
+    }
+    .flash-header .countdown-wrapper{
+        font-size: 12px;
+    }
+    .flash-header .countdown-label{
+        font-size: 12px;
+    }
+    .view-more-btn{
+        font-size: 12px;
+        margin-left: -71px;
+    }
+
+    .flash-products {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .flash-product-item {
+        /* width: calc(50% - 5px); Two items per row with a small gap */
+        /* display: flex; */
+    }
+
+    .flash-product-item:hover {
+        transform: none; /* Disable hover effect for touch devices */
+    }
+
+    .flash-header .view-more-btn {
+        font-size: 0.9em;
+    }
+
+    .product-image-container img {
+        width: 100%; /* Ensure images scale properly */
+    }
+
+    .product-info {
+        padding: 8px 0;
+    }
+
+    .product-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        max-width: 100%; /* Adjust the width as necessary */
+        height: 22px;
+    }
+
+    .product-price-label {
+        font-size: 1em;
+    }
+}
+

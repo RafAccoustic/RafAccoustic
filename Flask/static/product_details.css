@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+html, body {
+    overflow-x: hidden;
+
+}
+.flex-box{
+    display: flex;
+    width: 1000px;
+    margin: 20px auto;
+}
+.left{
+    width: 40%;
+}
+.big-img{
+    width: 250px;
+}
+.big-img img{
+    width: inherit;
+}
+.images{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    margin-top: 15px;
+}
+.small-img{
+    width: 50px;
+    overflow: hidden;
+    border: 1.5px solid black;
+}
+.small-img img{
+    width: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.small-img:hover img{
+    transform: scale(1.2);
+}
+.url{
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(0, 102, 255);
+}
+.pname{
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 50px;
+}
+.ratings i{
+    color: rgb(255, 136, 0);
+}
+.price{
+    font-size: 20px;
+    font-weight: 500;
+    margin: 20px 0;
+}
+.size{
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+.size p{
+    font-size: 18px;
+    font-weight: 500;
+}
+.psize{
+    width: 60px;
+    height: 30px;
+    border: 1px solid #ff5e00;
+    color: #000;
+    text-align: center;
+    margin: 0 10px;
+    cursor: pointer;
+}
+.psize.active{
+    border-width: 1.5px;
+    color: #ff5e00;
+    font-weight: 500;
+}
+.quantity{
+    display: flex;
+}
+.quantity p{
+    font-size: 18px;
+    font-weight: 500;
+}
+.quantity input{
+    width: 40px;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: center;
+    margin-left: 15px;
+}
+.btn-box{
+    display: flex;
+    margin-top: 40px;
+}
+.btn-box button{
+    font-size: 18px;
+    padding: 8px 25px;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+.cart-btn{
+    background-color: #ff5e00;
+    margin-right: 20px;
+}
+.buy-btn{
+    background-color: #00aeff;
+}
+.cart-btn:hover{
+    background-color: #ff3c00;
+}
+.buy-btn:hover{
+    background-color: #0066ff;
+}
+
+@media screen and (max-width: 768px) {
+    .flex-box {
+        display: flex;
+        flex-direction: column; /* Stack the elements vertically */
+        width: 100%; /* Use full width of the screen */
+        margin: 10px auto;
+    }
+
+    .left, .right {
+        width: 100%; /* Make both sections take full width on small screens */
+    }
+
+    .big-img {
+        width: 100%; /* Make the big image responsive */
+        margin: 0 auto; /* Center it */
+        text-align: center;
+    }
+
+    .big-img img {
+        max-width: 100%; /* Make sure the image doesn’t exceed screen width */
+        height: auto;
+    }
+
+    .images {
+        justify-content: center; /* Center the small images */
+
+    }
+
+    .small-img {
+        width: 40px; /* Adjust size for smaller screens */
+        margin: 5px;
+    }
+
+    .pname {
+        font-size: 18px; /* Reduce font size for smaller screens */
+        margin-top: 20px;
+    }
+
+    .price {
+        font-size: 18px; /* Adjust font size */
+        margin: 10px 0;
+    }
+
+
+
+    .psize {
+        margin: 5px 0; /* Adjust spacing for smaller screens */
+    }
+
+    .btn-box {
+        flex-direction: column; /* Stack buttons vertically */
+    }
+
+    .btn-box button {
+        width: 100%; /* Make buttons full width */
+        margin-bottom: 10px;
+    }
+    .cart-btn{
+        width: 1px;
+        margin-right: 0px;
+    }
+
+    /* Further adjustments can be made for even smaller screens if necessary */
+}
+
+@media screen and (max-width: 480px) {
+    .flex-box {
+        width: 100%; /* Ensure full width usage on very small screens */
+    }
+
+    .pname, .price {
+        font-size: 16px; /* Reduce font size even further */
+    }
+
+    .small-img {
+        width: 50px; /* Further adjust image sizes */
+    }
+}
+

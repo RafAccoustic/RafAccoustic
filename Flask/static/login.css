@@ -1,0 +1,252 @@
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.login-container {
+    width: 460px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.logo {
+    width: 100px;
+    margin-bottom: 15px;
+}
+
+.login-title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-top: 10px;
+}
+
+/* Form Styles */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #aaa;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #ff4500;
+}
+
+/* Forgot Password */
+.forgot-password-link {
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.forgot-password-link span {
+    color: #ff4500;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.forgot-password-link span:hover {
+    text-decoration: underline;
+}
+
+/* Submit Button */
+.submit-btn-container button {
+    width: 100%;
+    padding: 15px;
+    background-color: #ff4500;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn-container button:hover {
+    background-color: #e63d00;
+}
+
+/* Alternative Login */
+.switch-login-mode,
+.alt-login-btn {
+    margin: 20px 0;
+    color: #ff4500;
+    cursor: pointer;
+}
+
+.switch-login-mode span {
+    color: #ff4500;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.alt-login-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.alt-login-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.alt-login-btn img {
+    width: 20px;
+    margin-right: 10px;
+}
+
+.google-login {
+    background-color: white;
+}
+
+.facebook-login {
+    background-color: white;
+}
+
+/* Footer */
+.policy-text {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.policy-text a {
+    color: #ff4500;
+    text-decoration: none;
+}
+
+.policy-text a:hover {
+    text-decoration: underline;
+}
+
+.register-link span {
+    color: #ff4500;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.register-link span:hover {
+    text-decoration: underline;
+}
+
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #D3D3D3;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #333;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Registration Form Styling */
+.registration {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #F8F8F8;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.registration-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    /* font-size: 14px;
+    /* color: #333; */
+    display: inline-block;
+    /* margin-bottom: 5px; */
+    /* margin-right: 11px; */
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #B0B0B0;
+}
+
+/* Button Styling */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn-dark {
+    background-color: #333;
+    color: white;
+}
+
+.btn-dark:hover {
+    background-color: #555;
+}
+
+/* Login Link Styling */
+.registrationForm {
+    font-size: 14px;
+    text-align: center;
+    color: #007BFF;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.registrationForm:hover {
+    text-decoration: underline;
+}

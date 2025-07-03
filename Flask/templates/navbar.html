@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+<div  class="nav-container">
+  <div class="nav-logo">
+    <img src="static/images/Logo.png" alt="">
+  </div>
+  <div class="search-container">
+    <div class="search-input-wrapper" id="pc__search-input">
+      <div class="search-cell search-field">
+        <div class="search-cell__value search-field__value">
+          <div class="search-field__body">
+            <input type="text" id="search-input" class="search-input" placeholder="I'm looking for...">
+          </div>
+        </div>
+      </div>
+      <div class="search-button-wrapper">
+        <img src="https://img.kilimall.com/c/h5/imgs/search-icon@2x.png?x-image-process=image/format,webp/resize,w_80" alt="">
+      </div>
+    </div>
+
+    <div class="suggested-words" style="display: none;"></div>
+  </div>
+  <div class="nav-btn cart">
+    <div>
+      <span class="popover-wrapper">
+        <div class="nav-btn-content">
+          <form style="display:flex;margin-top: 18px;" id="cartForm" action="/order_details" method="GET">
+              <div class="badge-wrapper">
+                  <img src="https://img.kilimall.com/c/h5/imgs/cart-icon@2x.png?x-image-process=image/format,webp/resize,w_80" alt="" class="nav-btn-icons">
+              </div>
+              <a id="cart-link">
+                  <span class="cart-badge" id="cart-quantity-badge">1</span> <!-- Start with initial value -->
+                  <input type="hidden" name="product_ids" id="productIds">
+              </a>
+              <button style="border: none; background-color: white;" class="nav-label" type="button" onclick="goToCart()">
+                  <p class="nav-label">Cart</p>
+              </button>
+          </form>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <div class="nav-btn account">
+    <div>
+      <span class="popover-wrapper">
+        <div class="nav-btn-content">
+          <div class="badge-wrapper">
+            <img style="margin-top: -8px;" src="https://img.kilimall.com/c/h5/imgs/user-icon@2x.png?x-image-process=image/format,webp/resize,w_80" alt="" class="nav-btn-icon">
+          </div>
+          <p class="nav-label">My Account</p>
+          <i class="badge-wrapper icon-play jt" style="font-size: 14px;"></i>
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+<script>
+    // Function to check the cart and update the badge
+    function updateCartQuantity() {
+        let productIds = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log("These are the product ids",productIds)
+        // Update the cart badge with the number of items in the cart
+        let cartBadge = document.getElementById('cart-quantity-badge');
+        cartBadge.textContent = productIds.length;
+        if (productIds.length === 0) {
+            // alert("Your cart is empty!");
+            return;
+        }
+        else{
+          cartBadge.style.display = 'inline'; // Show the badge
+        }
+
+    }
+
+    // Call the function to update the cart on page load
+    updateCartQuantity();
+</script>
