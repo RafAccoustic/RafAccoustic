@@ -1,0 +1,322 @@
+import asyncio
+import tkinter as tk
+from tkinter import ttk, scrolledtext
+from bleak import BleakClient, BleakScanner, BleakGATTCharacteristic
+import logging
+import queue
+from functools import partial
+from concurrent.futures import ThreadPoolExecutor
+import threading
+from datetime import datetime
+
+# Standard Nordic UART Service UUIDs
+UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
+UART_RX_CHAR_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"  # RX characteristic (write)
+UART_TX_CHAR_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"  # TX characteristic (notify)
+
+class CustomHandler(logging.Handler):
+    def __init__(self, log_queue):
+        super().__init__()
+        self.log_queue = log_queue
+
+    def emit(self, record):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        log_entry = f"{timestamp} - {record.levelname} - {record.getMessage()}"
+        self.log_queue.put(log_entry)
+
+class BLEReceiverGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("BLE Chat")
+        self.root.geometry("800x600")
+        
+        # Create queue for logging
+        self.log_queue = queue.Queue()
+        
+        # Initialize logging
+        self.setup_logging()
+        
+        # Create BLE receiver
+        self.receiver = BLEReceiver(self.log_queue)
+        
+        # Create GUI elements
+        self.create_gui()
+        
+        # Start queue processing
+        self.process_log_queue()
+        
+        # Create thread pool for async operations
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.loop = asyncio.new_event_loop()
+        
+        # Track connection state
+        self.is_connected = False
+        
+        logging.info("Application started")
+
+    def setup_logging(self):
+        logger = logging.getLogger()
+        for handler in logger.handlers[:]:
+            logger.removeHandler(handler)
+        
+        handler = CustomHandler(self.log_queue)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+
+    def create_gui(self):
+        # Create main container with padding
+        main_container = ttk.Frame(self.root, padding="10")
+        main_container.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        # Status frame
+        status_frame = ttk.LabelFrame(main_container, text="Connection Status", padding="5")
+        status_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=5)
+        
+        self.status_label = ttk.Label(status_frame, text="Disconnected")
+        self.status_label.grid(row=0, column=0, sticky=tk.W)
+        
+        # Device list frame
+        device_frame = ttk.LabelFrame(main_container, text="Available Devices", padding="5")
+        device_frame.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
+        
+        # Device listbox with scrollbar
+        self.device_listbox = tk.Listbox(device_frame, height=6)
+        self.device_listbox.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        device_scrollbar = ttk.Scrollbar(device_frame, orient=tk.VERTICAL, command=self.device_listbox.yview)
+        device_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        self.device_listbox.configure(yscrollcommand=device_scrollbar.set)
+        
+        # Buttons frame
+        button_frame = ttk.Frame(main_container)
+        button_frame.grid(row=2, column=0, columnspan=2, pady=5)
+        
+        self.scan_button = ttk.Button(button_frame, text="Scan", command=self.start_scan)
+        self.scan_button.grid(row=0, column=0, padx=5)
+        
+        self.connect_button = ttk.Button(button_frame, text="Connect", command=self.connect_to_selected)
+        self.connect_button.grid(row=0, column=1, padx=5)
+        
+        self.disconnect_button = ttk.Button(button_frame, text="Disconnect", command=self.disconnect)
+        self.disconnect_button.grid(row=0, column=2, padx=5)
+        self.disconnect_button.state(['disabled'])
+        
+        # Message input frame
+        input_frame = ttk.Frame(main_container)
+        input_frame.grid(row=3, column=0, columnspan=2, pady=5, sticky=(tk.W, tk.E))
+        
+        self.message_entry = ttk.Entry(input_frame)
+        self.message_entry.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=(0, 5))
+        
+        self.send_button = ttk.Button(input_frame, text="Send", command=self.send_message)
+        self.send_button.grid(row=0, column=1)
+        self.send_button.state(['disabled'])
+        
+        # Log frame
+        log_frame = ttk.LabelFrame(main_container, text="Logs", padding="5")
+        log_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
+        
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=15)
+        self.log_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        # Configure grid weights
+        main_container.columnconfigure(0, weight=1)
+        main_container.rowconfigure(4, weight=1)
+        device_frame.columnconfigure(0, weight=1)
+        input_frame.columnconfigure(0, weight=1)
+        log_frame.columnconfigure(0, weight=1)
+        log_frame.rowconfigure(0, weight=1)
+        
+        # Bind Enter key to send message
+        self.message_entry.bind('<Return>', lambda e: self.send_message())
+
+    def process_log_queue(self):
+        """Process logging queue and update GUI"""
+        while True:
+            try:
+                message = self.log_queue.get_nowait()
+                self.log_text.insert(tk.END, message + '\n')
+                self.log_text.see(tk.END)
+                self.log_text.update_idletasks()
+            except queue.Empty:
+                break
+        self.root.after(100, self.process_log_queue)
+
+    def start_scan(self):
+        """Start BLE scan"""
+        self.device_listbox.delete(0, tk.END)
+        self.scan_button.state(['disabled'])
+        logging.info("Starting BLE scan...")
+        self.executor.submit(self.run_async, self.scan_devices())
+
+    async def scan_devices(self):
+        """Scan for BLE devices"""
+        try:
+            devices = await BleakScanner.discover(timeout=15.0)
+            self.root.after(0, self.update_device_list, devices)
+        except Exception as e:
+            logging.error(f"Scan error: {e}")
+        finally:
+            self.root.after(0, lambda: self.scan_button.state(['!disabled']))
+
+    def update_device_list(self, devices):
+        """Update device listbox with found devices"""
+        self.device_listbox.delete(0, tk.END)
+        self.devices = devices
+        found_devices = 0
+        for device in devices:
+            if device.name:  # Only show devices with names
+                self.device_listbox.insert(tk.END, f"{device.name} ({device.address})")
+                found_devices += 1
+        logging.info(f"Found {found_devices} devices with names")
+
+    def connect_to_selected(self):
+        """Connect to selected device"""
+        selection = self.device_listbox.curselection()
+        if selection:
+            device = self.devices[selection[0]]
+            logging.info(f"Attempting to connect to {device.name} ({device.address})")
+            self.connect_button.state(['disabled'])
+            self.executor.submit(self.run_async, self.connect_device(device))
+        else:
+            logging.warning("No device selected")
+
+    async def connect_device(self, device):
+        """Connect to device with retry logic"""
+        try:
+            if await self.receiver.connect_to_device(device):
+                self.root.after(0, self.connection_successful)
+            else:
+                self.root.after(0, self.connection_failed)
+        except Exception as e:
+            logging.error(f"Connection error: {e}")
+            self.root.after(0, self.connection_failed)
+
+    def connection_successful(self):
+        """Update GUI for successful connection"""
+        self.is_connected = True
+        self.status_label.config(text="Connected")
+        self.disconnect_button.state(['!disabled'])
+        self.send_button.state(['!disabled'])
+        self.connect_button.state(['disabled'])
+
+    def connection_failed(self):
+        """Update GUI for failed connection"""
+        self.is_connected = False
+        self.status_label.config(text="Connection failed")
+        self.connect_button.state(['!disabled'])
+        self.disconnect_button.state(['disabled'])
+        self.send_button.state(['disabled'])
+
+    def disconnect(self):
+        """Disconnect from device"""
+        logging.info("Disconnecting...")
+        self.executor.submit(self.run_async, self.receiver.stop())
+        self.is_connected = False
+        self.status_label.config(text="Disconnected")
+        self.disconnect_button.state(['disabled'])
+        self.send_button.state(['disabled'])
+        self.connect_button.state(['!disabled'])
+
+    def send_message(self):
+        """Send message to connected device"""
+        if self.is_connected:
+            message = self.message_entry.get().strip()
+            if message:
+                self.executor.submit(self.run_async, self.receiver.send_message(message))
+                self.message_entry.delete(0, tk.END)
+
+    def run_async(self, coro):
+        """Run coroutine in the event loop"""
+        asyncio.set_event_loop(self.loop)
+        return self.loop.run_until_complete(coro)
+
+class BLEReceiver:
+    def __init__(self, log_queue):
+        self.client = None
+        self.is_connected = False
+        self.log_queue = log_queue
+
+    async def notification_handler(self, sender: BleakGATTCharacteristic, data: bytearray):
+        """Handle incoming notifications"""
+        try:
+            message = data.decode('utf-8')
+            logging.info(f"Received: {message}")
+        except Exception as e:
+            logging.error(f"Error handling notification: {e}")
+
+    async def connect_to_device(self, device):
+        """Connect to a specific device with retry logic"""
+        max_retries = 3
+        current_retry = 0
+        
+        while current_retry < max_retries and not self.is_connected:
+            try:
+                # Create client with longer timeout
+                self.client = BleakClient(device.address, timeout=20.0)
+                await self.client.connect()
+                logging.info(f"Connected to {device.address}")
+                self.is_connected = True
+                
+                # Discover services
+                services = self.client.services
+                tx_char = None
+                
+                for service in services:
+                    if service.uuid == UART_SERVICE_UUID:
+                        # Find the TX characteristic (notifications)
+                        for char in service.characteristics:
+                            if char.uuid == UART_TX_CHAR_UUID:
+                                tx_char = char
+                                break
+                
+                if tx_char:
+                    # Set up notification handler
+                    await self.client.start_notify(tx_char, self.notification_handler)
+                    logging.info("Notification handler set up")
+                    return True
+                else:
+                    logging.warning("Required characteristic not found")
+                    await self.stop()
+                    return False
+                    
+            except Exception as e:
+                current_retry += 1
+                logging.error(f"Connection attempt {current_retry} failed: {e}")
+                await asyncio.sleep(2)  # Wait before retry
+                
+        return False
+
+    async def send_message(self, message: str):
+        """Send message to connected device"""
+        try:
+            if self.client and self.is_connected:
+                # Find the RX characteristic
+                for service in self.client.services:
+                    if service.uuid == UART_SERVICE_UUID:
+                        for char in service.characteristics:
+                            if char.uuid == UART_RX_CHAR_UUID:
+                                await self.client.write_gatt_char(char, message.encode('utf-8'))
+                                logging.info(f"Sent: {message}")
+                                return
+                
+                logging.warning("RX characteristic not found")
+        except Exception as e:
+            logging.error(f"Error sending message: {e}")
+
+    async def stop(self):
+        """Stop the BLE receiver"""
+        self.is_connected = False
+        if self.client:
+            await self.client.disconnect()
+        logging.info("Disconnected")
+
+def main():
+    root = tk.Tk()
+    app = BLEReceiverGUI(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
