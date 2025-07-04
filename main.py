@@ -6,6 +6,7 @@ from order import Order
 from product import Product
 from authenticate import Authenticate
 from typing import List, Optional
+import os
 
 class FlaskApp:
     def __init__(self):
@@ -199,7 +200,7 @@ class FlaskApp:
 
     def run(self, host='0.0.0.0', port=5000, debug=True):
         self.app.run(host=host, port=port, debug=debug)
-        
+
 flask_app = FlaskApp()
 app = flask_app.app  # Required for Gunicorn
 
