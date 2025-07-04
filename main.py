@@ -199,7 +199,9 @@ class FlaskApp:
 
     def run(self, host='0.0.0.0', port=5000, debug=True):
         self.app.run(host=host, port=port, debug=debug)
+        
+flask_app = FlaskApp()
+app = flask_app.app  # Required for Gunicorn
 
 if __name__ == '__main__':
-    app = FlaskApp()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
